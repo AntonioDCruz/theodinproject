@@ -5,11 +5,12 @@ import axios from '../src/js/axiosWithCsrf';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 export default class ProgressController extends Controller {
-  static targets = ['percentage'];
+  static targets = ['percentage', 'progressCircle'];
 
   static values = {
     url: String,
     percent: String,
+    circumference: Number,
   };
 
   initialize() {
@@ -20,6 +21,10 @@ export default class ProgressController extends Controller {
     this.fetchProgress();
   }
 
+  disconnect() {
+    console.log("disconnected")
+  }
+
   fetchProgress() {
     axios.get(this.urlValue).then((response) => {
       const { percentage } = response.data;
@@ -27,5 +32,11 @@ export default class ProgressController extends Controller {
       this.percentValue = percentage;
       this.percentageTarget.textContent = `${percentage}%`;
     });
+  }
+
+  percentValueChanged(percent) {
+    const offset = this.circumferenceValue - percent / 100 * this.circumferenceValue;
+
+    setTimeout(() => { this.progressCircleTarget.style.strokeDashoffset = offset }, 200)
   }
 }

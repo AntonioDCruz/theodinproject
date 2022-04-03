@@ -4,14 +4,38 @@
       data-controller="progress"
       data-progress-url-value=<%= url %>
       data-progress-percent-value="0"
+      data-progress-circumference-value="<%= circumference %>"
       data-action="update-progress@window->progress#fetchProgress"
-      class="course-badge progress-circle <%= modifier %>"
+      class="inline-flex items-center justify-center rounded-full relative group"
     >
-      <div class="progress-circle__inner" data-test-id='progress-badge'>
-        <%= image_tag borderless_badge, alt: "#{course.title} badge", class: 'progress-circle__image' %>
-        <p class="bold progress-circle__content" data-progress-target="percentage"></p>
-        <p class="progress-circle__content">COMPLETE</p>
-      </div>
+      <svg height="<%= radius * 2 %>" width="<%= radius * 2 %>">
+        <circle
+          class="text-gray-300"
+          stroke-width="<%= stroke + 3 %>"
+          stroke="currentColor"
+          fill="transparent"
+          r="<%= normalized_radius %>"
+          cx="<%= radius %>"
+          cy="<%= radius %>"
+        />
+        <circle
+          class="text-odin-green my-one transform-gpu origin-center -rotate-90 transition-stroke-dashoffset ease-in duration-500"
+          data-progress-target="progressCircle"
+          stroke-width="<%= stroke %>"
+          stroke-linecap="round"
+          stroke="currentColor"
+          fill="transparent"
+          style="<%= "stroke-dasharray: #{circumference}, #{circumference}; stroke-dashoffset: #{circumference};" %>"
+          r="<%= normalized_radius %>"
+          cx="<%= radius %>"
+          cy="<%= radius %>"
+        />
+      </svg>
+      <span class="absolute opacity-0 group-hover:opacity-100">
+        <p class="text-lg text-gray-700" data-progress-target="percentage"></p>
+        <p class="">complete</p>
+      </span>
+      <%= inline_svg borderless_badge, alt: "#{course.title} badge", class: 'absolute group-hover:opacity-0' %>
     </div>
   <% end %>
 <% else %>
@@ -21,3 +45,5 @@
     </div>
   <% end %>
 <% end %>
+
+

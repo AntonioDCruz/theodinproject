@@ -1,16 +1,26 @@
 class ProgressBadgeComponent < ViewComponent::Base
   delegate :user_signed_in?, :percentage_completed_by_user, to: :helpers
 
-  def initialize(course:, current_user:, url:, modifier: '')
+  def initialize(course:, current_user:, url:, modifier: '', radius: 70, stroke: 8)
     @course = course
     @current_user = current_user
     @modifier = modifier
     @url = url
+    @radius = radius
+    @stroke = stroke
   end
 
   private
 
-  attr_reader :course, :current_user, :modifier, :url
+  attr_reader :course, :current_user, :modifier, :url, :radius, :stroke
+
+  def normalized_radius
+    radius - stroke * 2
+  end
+
+  def circumference
+    normalized_radius * 2 * Math::PI
+  end
 
   def badge
     course_badges.fetch(course.title, 'icons/odin-icon.svg')
